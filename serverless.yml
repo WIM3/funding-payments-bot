@@ -1,0 +1,37 @@
+service: funding-payments-bot
+
+useDotenv: true
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-export-env
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-central-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    EVM: ${self:provider.stage}
+    CLEARING_HOUSE: 0x115eB30d254161Fc7C16a2E20c1c34aCbA56cCD1
+    WALLET_PK: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/walletPk}
+    PROVIDER_URL: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/providerUrl}
+  apiGateway:
+    shouldStartNameWithService: true
+
+functions:
+  scheduler:
+    handler: src/services/scheduler.main
+    timeout: 900
+    # TODO: needs to be replaced with schedule
+    events:
+      - httpApi:
+          method: GET
+          path: /scheduler
