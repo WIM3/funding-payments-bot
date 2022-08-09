@@ -30,6 +30,8 @@ functions:
   scheduler:
     handler: src/services/scheduler.main
     timeout: 900
+    environment:
+      SUBGRAPH_URL: https://api.thegraph.com/subgraphs/name/infinix-finance/dev-fuji-positions
     # TODO: needs to be replaced with schedule
     events:
       - httpApi:

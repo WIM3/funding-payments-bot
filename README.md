@@ -8,6 +8,7 @@
 Some parameters can be set directly in `serverless.yml`:
 
 - `CLEARING_HOURSE` - clearing house address (required)
+- `SUBGRAPH_URL` - url of the subgraph with amms (required)
 
 The remaining parameters are private and they are therefore taken from `AWS Parameter Store` with these paths:
 
