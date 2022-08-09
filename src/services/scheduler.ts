@@ -1,15 +1,18 @@
-﻿import { getAmms } from '../clients/subgraph';
-import { Error, Response } from '../common/types';
+﻿import { Error, Response } from '../common/types';
 import { success, failure } from '../utils/response';
 import { generateError } from '../utils/error';
+import { getAmms } from '../clients/subgraph';
+import { getAllTasks } from '../clients/dynamo';
 
 module.exports.main = async (): Promise<Response> => {
   let error: Error;
 
   await getAmms()
-    .then((amms) => {
-      // TODO: replace with proper processing
-      console.log(amms);
+    .then(async () => {
+      // TODO: replace with proper functionality
+      // we need to add new ones and remove old ones
+      const tasks = await getAllTasks();
+      console.log(tasks);
     })
     .catch((e) => {
       console.log(e);

@@ -23,8 +23,32 @@ provider:
     CLEARING_HOUSE: 0x115eB30d254161Fc7C16a2E20c1c34aCbA56cCD1
     WALLET_PK: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/walletPk}
     PROVIDER_URL: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/providerUrl}
+    TASK_TABLE: { Ref: TaskTable }
   apiGateway:
     shouldStartNameWithService: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource: '*'
+
+resources:
+  Resources:
+    TaskTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-db
+        AttributeDefinitions:
+          - AttributeName: ammId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ammId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
 
 functions:
   scheduler:
