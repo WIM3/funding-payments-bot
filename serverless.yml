@@ -12,6 +12,19 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  snsTopic: ${self:service}-${self:provider.stage}-topic
+  snsTopicArn:
+    {
+      'Fn::Join':
+        [
+          '',
+          [
+            'arn:aws:sns:${self:provider.region}:',
+            { 'Ref': 'AWS::AccountId' },
+            ':${self:custom.snsTopic}',
+          ],
+        ],
+    }
 
 provider:
   name: aws
@@ -24,6 +37,7 @@ provider:
     WALLET_PK: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/walletPk}
     PROVIDER_URL: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/providerUrl}
     TASK_TABLE: { Ref: TaskTable }
+    TASK_TOPIC: ${self:custom.snsTopicArn}
   apiGateway:
     shouldStartNameWithService: true
   iam:
@@ -32,6 +46,7 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:*
+            - sns:*
           Resource: '*'
 
 resources:
@@ -49,6 +64,20 @@ resources:
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
           StreamViewType: NEW_IMAGE
+    SnsTopicPolicy:
+      Type: AWS::SNS::TopicPolicy
+      Properties:
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Sid: SnsTopicPolicy
+              Effect: Allow
+              Principal:
+                Service: events.amazonaws.com
+              Action: sns:Publish
+              Resource: '*'
+        Topics:
+          - ${self:custom.snsTopicArn}
 
 functions:
   scheduler:
@@ -61,3 +90,20 @@ functions:
       - httpApi:
           method: GET
           path: /scheduler
+  alarm:
+    handler: src/services/alarm.main
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - TaskTable
+              - StreamArn
+          maximumRetryAttempts: 1
+          batchSize: 1
+          filterPatterns:
+            - eventName: [INSERT]
+  executor:
+    handler: src/services/executor.main
+    events:
+      - sns: ${self:custom.snsTopic}
