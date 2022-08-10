@@ -13,3 +13,11 @@ export const toBaseUnitBN = (rawAmt: string | number | BigNumber, decimals: numb
 
   return raw.times(base.pow(decimalsBN)).integerValue();
 };
+
+/**
+ * Gets current timestamp in seconds
+ * @returns {number} Timestamp in seconds
+ */
+export const getTimestampInSeconds = (): number => {
+  return Math.floor(Date.now() / 1000);
+};

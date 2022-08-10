@@ -1,5 +1,4 @@
 export type Error = {
-  service: string;
   message: string;
   details?: string;
 };
@@ -18,7 +17,7 @@ export type TransactionResponse = {
 
 export type Amm = {
   id: string;
-  fundingPeriod: number;
+  fundingPeriod: string;
 };
 
 export interface ScheduledTask {

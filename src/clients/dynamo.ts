@@ -7,28 +7,28 @@ const db = new DocumentClient();
 
 /**
  * Gets all tasks
- * @returns {Promise.<DocumentClient.ItemList>} Response with requested data
+ * @returns {Promise.<ScheduledTask[]>} Requested tasks
  */
-export const getAllTasks = async (): Promise<DocumentClient.ItemList> => {
+export const getAllTasks = async (): Promise<ScheduledTask[]> => {
   const params = {
     TableName: TASK_TABLE,
   };
-  return (await db.scan(params).promise()).Items;
+  return <ScheduledTask[]>(await db.scan(params).promise()).Items;
 };
 
 /**
  * Gets selected task
  * @param [key] Task key
- * @returns {Promise.<DocumentClient.AttributeMap>} Response with requested data
+ * @returns {Promise.<ScheduledTask>} Requested task
  */
-export const getTask = async (key: string): Promise<DocumentClient.AttributeMap> => {
+export const getTask = async (key: string): Promise<ScheduledTask> => {
   const params = {
     TableName: TASK_TABLE,
     Key: {
-      id: key,
+      ammId: key,
     },
   };
-  return (await db.get(params).promise()).Item;
+  return <ScheduledTask>(await db.get(params).promise()).Item;
 };
 
 /**
@@ -57,7 +57,7 @@ export const updateTask = async (
   const params = {
     TableName: TASK_TABLE,
     Key: {
-      id: key,
+      ammId: key,
     },
     UpdateExpression: 'set lastPayment = :newLastPayment, nextPayment = :newNextPayment',
     ExpressionAttributeValues: {
@@ -76,7 +76,7 @@ export const deleteTask = async (key: string): Promise<void> => {
   const params = {
     TableName: TASK_TABLE,
     Key: {
-      id: key,
+      ammId: key,
     },
   };
   await db.delete(params).promise();
