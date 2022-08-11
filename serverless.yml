@@ -12,19 +12,6 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
-  snsTopic: ${self:service}-${self:provider.stage}-topic
-  snsTopicArn:
-    {
-      'Fn::Join':
-        [
-          '',
-          [
-            'arn:aws:sns:${self:provider.region}:',
-            { 'Ref': 'AWS::AccountId' },
-            ':${self:custom.snsTopic}',
-          ],
-        ],
-    }
 
 provider:
   name: aws
@@ -37,7 +24,7 @@ provider:
     WALLET_PK: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/walletPk}
     PROVIDER_URL: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/providerUrl}
     TASK_TABLE: { Ref: TaskTable }
-    TASK_TOPIC: ${self:custom.snsTopicArn}
+    TASK_TOPIC: { Ref: TaskTopic }
   apiGateway:
     shouldStartNameWithService: true
   iam:
@@ -46,7 +33,7 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:*
-            - sns:*
+            - events:*
           Resource: '*'
 
 resources:
@@ -64,6 +51,10 @@ resources:
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
           StreamViewType: NEW_IMAGE
+    TaskTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: TaskTopic
     SnsTopicPolicy:
       Type: AWS::SNS::TopicPolicy
       Properties:
@@ -77,7 +68,7 @@ resources:
               Action: sns:Publish
               Resource: '*'
         Topics:
-          - ${self:custom.snsTopicArn}
+          - Ref: TaskTopic
 
 functions:
   scheduler:
@@ -106,4 +97,6 @@ functions:
   executor:
     handler: src/services/executor.main
     events:
-      - sns: ${self:custom.snsTopic}
+      - sns:
+          arn: ${self:provider.environment.TASK_TOPIC}
+          topicName: TaskTopic

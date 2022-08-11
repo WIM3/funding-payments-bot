@@ -7,7 +7,7 @@ module.exports.main = async (event: SNSEvent): Promise<Response> => {
   let error: Error;
 
   // TODO: replace with proper functionality
-  console.log(`running: ${event.Records}`);
+  console.log(`running: ${JSON.stringify(event.Records)}`);
 
   return error ? failure(JSON.stringify(error)) : success('OK');
 };

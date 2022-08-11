@@ -7,7 +7,8 @@ import { Error } from '../common/types';
  * @returns {Error} Error with a proper format defined above
  */
 export const generateError = (message: string, details?: string): Error => {
-  details && console.log(details);
+  console.error(message);
+  details && console.error(details);
   return {
     message,
     details,

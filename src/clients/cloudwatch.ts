@@ -5,35 +5,45 @@ import { TASK_TOPIC } from '../common/constants';
 const cw = new CloudWatchEvents();
 
 /**
- * Creates a scheduled rule
- * @param [rule] Rule name
- * @param [seconds] Number of seconds for schedule
+ * Adds scheduled rule
+ * @param [ammId] Amm id used for name
  */
-export const addRule = (rule: string, seconds: number): void => {
+export const addRule = async (ammId: string, seconds: number): Promise<void> => {
+  // TODO: we need to double-check if this accurracy is enough
+  const minutes = Math.floor(seconds / 60);
   const params = {
-    Name: rule,
-    ScheduleExpression: `rate(${seconds} seconds)`,
+    Name: `rule-${ammId}`,
+    ScheduleExpression: `rate(${minutes} minutes)`,
     State: 'ENABLED',
   };
-  cw.putRule(params);
+  await cw.putRule(params).promise();
 };
 
 /**
  * Adds lambda function target
- * @param [rule] Rule name
- * @param [target] Target name
- * @param [ammId] Amm id
+ * @param [ammId] Amm id used for name
  */
-export const addTarget = (rule: string, target: string, ammId: string): void => {
+export const addTarget = async (ammId: string): Promise<void> => {
   const params = {
-    Rule: rule,
+    Rule: `rule-${ammId}`,
     Targets: [
       {
         Arn: TASK_TOPIC,
-        Id: target,
-        Input: ammId,
+        Id: `target-${ammId}`,
+        Input: JSON.stringify({ ammId }),
       },
     ],
   };
-  cw.putTargets(params);
+  await cw.putTargets(params).promise();
+};
+
+/**
+ * Removes scheduled rule
+ * @param [ammId] Amm id
+ */
+export const removeRule = async (ammId: string): Promise<void> => {
+  const params = {
+    Name: `rule-${ammId}`,
+  };
+  await cw.deleteRule(params).promise();
 };

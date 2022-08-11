@@ -19,9 +19,9 @@
     ]
   },
   "dependencies": {
-    "aws-sdk": "^2.1109.0",
+    "aws-sdk": "^2.1192.0",
     "axios": "^0.27.2",
-    "bignumber.js": "^9.0.2",
+    "bignumber.js": "^9.1.0",
     "ethers": "^5.6.2"
   },
   "devDependencies": {
@@ -39,12 +39,12 @@
     "prettier": "^2.0.5",
     "serverless": "^3.11.0",
     "serverless-export-env": "github:arabold/serverless-export-env",
-    "serverless-offline": "^8.5.0",
+    "serverless-offline": "^8.8.0",
     "serverless-webpack": "^5.3.2",
-    "ts-loader": "^5.3.3",
+    "ts-loader": "^8.0.5",
     "typescript": "^3.9.7",
-    "webpack": "^4.43.0",
-    "webpack-node-externals": "^1.7.2"
+    "webpack": "^5.74.0",
+    "webpack-node-externals": "^2.5.0"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

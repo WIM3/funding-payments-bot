@@ -4,6 +4,7 @@ import { generateError } from '../utils/error';
 import { getTimestampInSeconds } from '../utils/numbers';
 import { getAmms } from '../clients/subgraph';
 import { getAllTasks, createTask, deleteTask } from '../clients/dynamo';
+import { removeRule } from '../clients/cloudwatch';
 
 module.exports.main = async (): Promise<Response> => {
   let error: Error;
@@ -39,11 +40,16 @@ module.exports.main = async (): Promise<Response> => {
           }
 
           for (const task of tasks) {
-            // making sure that if the task is not confirmed, it will get removed from DB
             if (confirmedAmms.indexOf(task.ammId) === -1) {
               await deleteTask(task.ammId).catch((e) => {
                 error = generateError(
                   `failed to remove old task ${task.ammId} from DB`,
+                  JSON.stringify(e),
+                );
+              });
+              await removeRule(task.ammId).catch((e) => {
+                error = generateError(
+                  `failed to remove rule ${task.ammId} from event bus`,
                   JSON.stringify(e),
                 );
               });
