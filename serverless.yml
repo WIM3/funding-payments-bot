@@ -20,7 +20,6 @@ provider:
   stage: ${opt:stage, 'dev'}
   environment:
     EVM: ${self:provider.stage}
-    CLEARING_HOUSE: 0x115eB30d254161Fc7C16a2E20c1c34aCbA56cCD1
     WALLET_PK: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/walletPk}
     PROVIDER_URL: ${ssm:/infinix/${self:custom.stage}/funding-payments-bot/providerUrl}
     TASK_TABLE: { Ref: TaskTable }
@@ -73,16 +72,18 @@ resources:
 functions:
   scheduler:
     handler: src/services/scheduler.main
-    timeout: 900
+    timeout: 30
     environment:
       SUBGRAPH_URL: https://api.thegraph.com/subgraphs/name/infinix-finance/dev-fuji-positions
-    # TODO: needs to be replaced with schedule
     events:
+      # TODO: needs to be replaced with schedule after testing
+      # - schedule: rate(X hours)
       - httpApi:
           method: GET
           path: /scheduler
   alarm:
     handler: src/services/alarm.main
+    timeout: 60
     events:
       - stream:
           type: dynamodb
@@ -96,6 +97,9 @@ functions:
             - eventName: [INSERT]
   executor:
     handler: src/services/executor.main
+    timeout: 900
+    environment:
+      CLEARING_HOUSE: 0x115eB30d254161Fc7C16a2E20c1c34aCbA56cCD1
     events:
       - sns:
           arn: ${self:provider.environment.TASK_TOPIC}
