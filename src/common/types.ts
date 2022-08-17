@@ -17,7 +17,7 @@ export type TransactionResponse = {
 
 export type Amm = {
   id: string;
-  fundingPeriod: string;
+  fundingPeriod: number;
 };
 
 export interface ScheduledTask {

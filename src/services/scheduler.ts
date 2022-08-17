@@ -22,7 +22,7 @@ module.exports.main = async (): Promise<Response> => {
             // if this amm does not have a task in DB yet, it needs to be added
             if (!task) {
               // TODO: we need to double-check if this really is in seconds
-              const fundingPeriod = +amm.fundingPeriod;
+              const fundingPeriod = amm.fundingPeriod;
               const newTask: ScheduledTask = {
                 ammId: amm.id,
                 fundingPeriod,
