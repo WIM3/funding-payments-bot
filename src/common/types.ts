@@ -24,5 +24,4 @@ export interface ScheduledTask {
   ammId: string;
   fundingPeriod: number;
   lastPayment: number;
-  nextPayment: number;
 }

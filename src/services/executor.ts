@@ -3,7 +3,9 @@ import { SNSEvent } from 'aws-lambda';
 import { Error, Response } from '../common/types';
 import { success, failure } from '../utils/response';
 import { generateError } from '../utils/error';
+import { getTimestampInSeconds } from '../utils/numbers';
 import { executeFundingPayment } from '../clients/ethers';
+import { updateTask } from '../clients/dynamo';
 
 module.exports.main = async (event: SNSEvent): Promise<Response> => {
   let error: Error;
@@ -13,9 +15,16 @@ module.exports.main = async (event: SNSEvent): Promise<Response> => {
 
     if (amm) {
       await executeFundingPayment(amm)
-        .then((res) => {
+        .then(async (res) => {
           if (res.status === 1) {
             console.log(`${amm}: funding payment successful - ${res.txHash}`);
+
+            await updateTask(amm, getTimestampInSeconds()).catch((e) => {
+              error = generateError(
+                `failed to add new task for ${amm.id} to DB`,
+                JSON.stringify(e),
+              );
+            });
           } else {
             error = generateError(`${amm}: funding payment unsuccessful - ${res.txHash}`);
           }

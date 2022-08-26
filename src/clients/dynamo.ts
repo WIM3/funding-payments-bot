@@ -47,22 +47,16 @@ export const createTask = async (task: ScheduledTask): Promise<void> => {
  * Updates existing task with new payment timestamps
  * @param [key] Key of the task to be updated
  * @param [lastPayment] New last payment timestamp
- * @param [nextPayment] New next payment timestamp
  */
-export const updateTask = async (
-  key: string,
-  lastPayment: number,
-  nextPayment: number,
-): Promise<void> => {
+export const updateTask = async (key: string, lastPayment: number): Promise<void> => {
   const params = {
     TableName: TASK_TABLE,
     Key: {
       ammId: key,
     },
-    UpdateExpression: 'set lastPayment = :newLastPayment, nextPayment = :newNextPayment',
+    UpdateExpression: 'set lastPayment = :newLastPayment',
     ExpressionAttributeValues: {
       ':newLastPayment': lastPayment,
-      ':newNextPayment': nextPayment,
     },
   };
   await db.update(params).promise();

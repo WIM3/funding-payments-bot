@@ -1,7 +1,6 @@
 ﻿import { Error, Response, ScheduledTask } from '../common/types';
 import { success, failure } from '../utils/response';
 import { generateError } from '../utils/error';
-import { getTimestampInSeconds } from '../utils/numbers';
 import { getAmms } from '../clients/subgraph';
 import { getAllTasks, createTask, deleteTask } from '../clients/dynamo';
 import { removeRule } from '../clients/cloudwatch';
@@ -27,7 +26,6 @@ module.exports.main = async (): Promise<Response> => {
                 ammId: amm.id,
                 fundingPeriod,
                 lastPayment: 0,
-                nextPayment: getTimestampInSeconds() + fundingPeriod,
               };
               await createTask(newTask).catch((e) => {
                 error = generateError(
