@@ -76,8 +76,7 @@ functions:
     environment:
       SUBGRAPH_URL: https://api.thegraph.com/subgraphs/name/infinix-finance/dev-fuji-positions
     events:
-      # TODO: needs to be replaced with schedule after testing
-      # - schedule: rate(X hours)
+      - schedule: rate(12 hours)
       - httpApi:
           method: GET
           path: /scheduler
@@ -99,7 +98,7 @@ functions:
     handler: src/services/executor.main
     timeout: 900
     environment:
-      CLEARING_HOUSE: 0x115eB30d254161Fc7C16a2E20c1c34aCbA56cCD1
+      CLEARING_HOUSE: 0xaFBCFf94cD9cA695b4d97ebAC9095303cC38703A
     events:
       - sns:
           arn: ${self:provider.environment.TASK_TOPIC}
