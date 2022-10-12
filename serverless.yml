@@ -98,7 +98,7 @@ functions:
     handler: src/services/executor.main
     timeout: 900
     environment:
-      CLEARING_HOUSE: 0xaFBCFf94cD9cA695b4d97ebAC9095303cC38703A
+      CLEARING_HOUSE: '0xaFBCFf94cD9cA695b4d97ebAC9095303cC38703A'
     events:
       - sns:
           arn: ${self:provider.environment.TASK_TOPIC}
