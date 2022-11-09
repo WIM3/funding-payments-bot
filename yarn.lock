@@ -5420,6 +5420,11 @@ serverless-offline@^8.8.0:
     velocityjs "^2.0.6"
     ws "^7.5.7"
 
+serverless-plugin-tag-events@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-tag-events/-/serverless-plugin-tag-events-1.1.0.tgz#4b3384582fda8d0d603c07047b05277dd1c74440"
+  integrity sha512-YqJRIX8k22QqIl0GjlfhpiPkOEqQl6fRHH6im9VFc4W7k0NutC8WXhBuxFF9wCek4lLx0WMkHHXOUTwTHbIDDQ==
+
 serverless-webpack@^5.3.2:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/serverless-webpack/-/serverless-webpack-5.8.0.tgz#930b9c6cbc8a60e87f7207fd4b23a7e20e4770ea"

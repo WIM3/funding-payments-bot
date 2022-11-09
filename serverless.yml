@@ -6,6 +6,7 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-export-env
+  - serverless-plugin-tag-events
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -26,6 +27,12 @@ provider:
     TASK_TOPIC: { Ref: TaskTopic }
   apiGateway:
     shouldStartNameWithService: true
+  stackTags:
+    Entity: ABAG
+    Project: Infinix
+  tags:
+    Entity: ABAG
+    Project: Infinix
   iam:
     role:
       statements:
@@ -76,7 +83,7 @@ functions:
     environment:
       SUBGRAPH_URL: https://api.thegraph.com/subgraphs/name/infinix-finance/dev-fuji-positions
     events:
-      - schedule: rate(12 hours)
+      # - schedule: rate(12 hours)
       - httpApi:
           method: GET
           path: /scheduler
