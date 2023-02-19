@@ -27,12 +27,6 @@ provider:
     TASK_TOPIC: { Ref: TaskTopic }
   apiGateway:
     shouldStartNameWithService: true
-  stackTags:
-    Entity: ABAG
-    Project: Infinix
-  tags:
-    Entity: ABAG
-    Project: Infinix
   iam:
     role:
       statements:
