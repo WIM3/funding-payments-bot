@@ -27,12 +27,6 @@ provider:
     TASK_TOPIC: { Ref: TaskTopic }
   apiGateway:
     shouldStartNameWithService: true
-  stackTags:
-    Entity: WIM3
-    Project: TranderIsland
-  tags:
-    Entity: WIM3
-    Project: TranderIsland
   iam:
     role:
       statements:
@@ -58,11 +52,6 @@ resources:
         BillingMode: PAY_PER_REQUEST
         StreamSpecification:
           StreamViewType: NEW_IMAGE
-        Tags:
-          - Key: Entity
-            Value: WIM3
-          - Key: Project
-            Value: TranderIsland
     TaskTopic:
       Type: AWS::SNS::Topic
       Properties:
