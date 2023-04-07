@@ -121,3 +121,4 @@ functions:
       - sns:
           arn: ${self:provider.environment.TASK_TOPIC}
           topicName: TaskTopic
+
