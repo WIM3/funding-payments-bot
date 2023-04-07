@@ -6,7 +6,7 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-export-env
-  - serverless-plugin-tag-events
+  # - serverless-plugin-tag-events
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -34,7 +34,6 @@ provider:
           Action:
             - dynamodb:*
             - events:*
-            - tag:*
           Resource: '*'
 
 resources:
