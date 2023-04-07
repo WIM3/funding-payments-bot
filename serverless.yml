@@ -79,11 +79,6 @@ resources:
                 Service: events.amazonaws.com
               Action: sns:Publish
               Resource: '*'
-        Tags:
-          - Key: Entity
-            Value: WIM3
-          - Key: Project
-            Value: TranderIsland
         Topics:
           - Ref: TaskTopic
 
